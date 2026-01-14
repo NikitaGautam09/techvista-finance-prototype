@@ -1,0 +1,2285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechVista Finance Management Platform - Interactive Prototype</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-lavender: #9B8FC9;
+            --soft-lavender: #D4C5F9;
+            --light-lavender: #F0EBFF;
+            --accent-pink: #E8B4D9;
+            --soft-pink: #F5DFF0;
+            --deep-purple: #6B5B95;
+            --white: #FFFFFF;
+            --off-white: #FDFBFF;
+            --text-dark: #3A3147;
+            --text-medium: #6B5B7F;
+            --text-light: #9B8FA7;
+            --border-color: #E8DFF5;
+            --success: #A8D5BA;
+            --warning: #F7C6C7;
+            --shadow-light: rgba(155, 143, 201, 0.08);
+            --shadow-medium: rgba(155, 143, 201, 0.15);
+            --shadow-heavy: rgba(107, 91, 149, 0.25);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, #FDFBFF 0%, #F5E6F9 50%, #E8DFF5 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -10%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(232, 180, 217, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(155, 143, 201, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: float 25s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(5deg); }
+            66% { transform: translate(-20px, 20px) rotate(-5deg); }
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 3rem;
+            box-shadow: 0 4px 24px var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-lavender), var(--accent-pink));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 16px var(--shadow-medium);
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--deep-purple);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-lavender);
+            background: var(--light-lavender);
+        }
+
+        .nav-link.active {
+            color: var(--deep-purple);
+            background: var(--soft-lavender);
+            font-weight: 600;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--light-lavender);
+            border-radius: 12px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-pink), var(--primary-lavender));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--deep-purple);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-medium);
+            font-size: 1.1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px var(--shadow-light);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(155, 143, 201, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(40%, -40%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px var(--shadow-medium);
+            border-color: var(--primary-lavender);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--soft-lavender), var(--soft-pink));
+            box-shadow: 0 4px 16px var(--shadow-light);
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            color: var(--text-medium);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--deep-purple);
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--success);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Payment List */
+        .payment-list {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 12px 48px var(--shadow-light);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--deep-purple);
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-item {
+            padding: 1.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            background: var(--white);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .payment-item:hover {
+            border-color: var(--primary-lavender);
+            box-shadow: 0 8px 24px var(--shadow-light);
+            transform: translateX(4px);
+        }
+
+        .payment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .payment-vendor {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--deep-purple);
+            margin-bottom: 0.25rem;
+        }
+
+        .payment-id {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .payment-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-lavender);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.pending {
+            background: rgba(232, 180, 217, 0.2);
+            color: #C97FA5;
+        }
+
+        .status-badge.approved {
+            background: rgba(168, 213, 186, 0.2);
+            color: #5FA876;
+        }
+
+        .status-badge.processing {
+            background: rgba(155, 143, 201, 0.2);
+            color: var(--primary-lavender);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .payment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .payment-detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .payment-detail-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .payment-detail-value {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        /* Form */
+        .form-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 3rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 12px 48px var(--shadow-light);
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .form-section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--deep-purple);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .form-section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, var(--primary-lavender), var(--accent-pink));
+            border-radius: 2px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .required {
+            color: var(--accent-pink);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1.125rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--white);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-lavender);
+            box-shadow: 0 0 0 4px rgba(155, 143, 201, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            background: var(--light-lavender);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary-lavender);
+            background: var(--soft-lavender);
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-lavender), var(--deep-purple));
+            color: white;
+            box-shadow: 0 4px 16px var(--shadow-medium);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--shadow-heavy);
+        }
+
+        .btn-secondary {
+            background: var(--light-lavender);
+            color: var(--deep-purple);
+        }
+
+        .btn-secondary:hover {
+            background: var(--soft-lavender);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--primary-lavender), var(--accent-pink));
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 5rem;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-lavender), var(--accent-pink));
+            box-shadow: 0 0 0 4px rgba(155, 143, 201, 0.2);
+        }
+
+        .timeline-content {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: var(--deep-purple);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-meta {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid;
+        }
+
+        .alert-success {
+            background: rgba(168, 213, 186, 0.1);
+            border-color: var(--success);
+            color: #2d6a3e;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem 1.5rem;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-card {
+                padding: 1.5rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-menu {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Report Tabs */
+        .report-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 0.5rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
+        }
+
+        .report-tab {
+            flex: 1;
+            min-width: 150px;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-medium);
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'DM Sans', sans-serif;
+            white-space: nowrap;
+        }
+
+        .report-tab:hover {
+            background: var(--light-lavender);
+            color: var(--primary-lavender);
+        }
+
+        .report-tab.active {
+            background: linear-gradient(135deg, var(--primary-lavender), var(--deep-purple));
+            color: white;
+            box-shadow: 0 4px 16px var(--shadow-medium);
+        }
+
+        .report-container {
+            display: none;
+        }
+
+        .report-container.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .report-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .report-filters .form-group {
+            flex: 1;
+            min-width: 200px;
+            margin: 0;
+        }
+
+        .report-content {
+            margin-top: 2rem;
+        }
+
+        /* Summary Cards */
+        .report-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, var(--light-lavender), var(--soft-pink));
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .summary-card.large {
+            grid-column: 1 / -1;
+        }
+
+        .summary-label {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+
+        .summary-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--deep-purple);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-value.positive {
+            color: var(--success);
+        }
+
+        .summary-value.negative {
+            color: var(--warning);
+        }
+
+        .summary-date {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .summary-trend {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        /* Report Table */
+        .report-table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--white);
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .report-table thead {
+            background: linear-gradient(135deg, var(--soft-lavender), var(--soft-pink));
+        }
+
+        .report-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--deep-purple);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .report-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+
+        .report-table tbody tr:hover {
+            background: var(--light-lavender);
+        }
+
+        .report-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .report-table tfoot {
+            background: var(--light-lavender);
+            font-weight: 600;
+        }
+
+        .report-table tfoot td {
+            padding: 1rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .report-table .negative {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .report-table .positive {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .report-table .neutral {
+            color: var(--text-medium);
+        }
+
+        .report-table .forecast {
+            color: var(--primary-lavender);
+            font-style: italic;
+        }
+
+        /* Percentage Bar */
+        .percentage-bar {
+            position: relative;
+            display: inline-block;
+            padding-left: 80px;
+            font-weight: 600;
+            color: var(--deep-purple);
+        }
+
+        .percentage-bar::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .percentage-bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: calc(70px * var(--percentage) / 100%);
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary-lavender), var(--accent-pink));
+            border-radius: 4px;
+        }
+
+        /* Vendor List */
+        .vendor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .vendor-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: var(--white);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .vendor-item:hover {
+            border-color: var(--primary-lavender);
+            box-shadow: 0 4px 16px var(--shadow-light);
+            transform: translateX(4px);
+        }
+
+        .vendor-rank {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--soft-lavender), var(--soft-pink));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--deep-purple);
+            flex-shrink: 0;
+        }
+
+        .vendor-details {
+            flex: 1;
+        }
+
+        .vendor-name {
+            font-weight: 600;
+            color: var(--deep-purple);
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .vendor-category {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .vendor-amount {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-lavender);
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Approver Performance */
+        .approver-performance {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .approver-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .approver-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .approver-name {
+            font-weight: 600;
+            color: var(--deep-purple);
+            font-size: 1rem;
+        }
+
+        .approver-role {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .approver-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-item .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            .report-tabs {
+                flex-direction: column;
+            }
+
+            .report-tab {
+                flex: none;
+                width: 100%;
+            }
+
+            .report-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .report-filters {
+                flex-direction: column;
+            }
+
+            .report-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .approver-stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+
+            .vendor-item {
+                flex-wrap: wrap;
+            }
+
+            .vendor-amount {
+                width: 100%;
+                text-align: right;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">T</div>
+                    <span class="logo-text">TechVista Finance</span>
+                </div>
+                <nav class="nav-menu">
+                    <a class="nav-link active" data-view="dashboard">Dashboard</a>
+                    <a class="nav-link" data-view="new-payment">New Payment</a>
+                    <a class="nav-link" data-view="my-payments">My Payments</a>
+                    <a class="nav-link" data-view="reports">Reports</a>
+                </nav>
+                <div class="user-profile">
+                    <div class="user-avatar">AP</div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark);">Amit Patel</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">Engineering Manager</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <div id="dashboard" class="view active">
+                <div class="page-header">
+                    <h1 class="page-title">Welcome back! 👋</h1>
+                    <p class="page-subtitle">Here's what's happening with your payments today</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-label">Pending Approvals</div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-trend">↓ 2 from yesterday</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-label">Total Payments This Month</div>
+                        <div class="stat-value">25</div>
+                        <div class="stat-trend">↑ 8% vs last month</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-label">Avg Approval Time</div>
+                        <div class="stat-value">1.5d</div>
+                        <div class="stat-trend">↓ 60% improvement</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">📧</div>
+                        <div class="stat-label">Status Inquiries Today</div>
+                        <div class="stat-value">4</div>
+                        <div class="stat-trend">↓ 80% reduction</div>
+                    </div>
+                </div>
+
+                <div class="payment-list">
+                    <h2 class="section-title">Recent Payment Requests</h2>
+                    
+                    <div class="payment-item" data-payment-id="1">
+                        <div class="payment-header">
+                            <div>
+                                <div class="payment-vendor">ABC Software Solutions</div>
+                                <div class="payment-id">PAY-2026-001 • INV-2026-045</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="payment-amount">₹75,000</div>
+                                <span class="status-badge pending">
+                                    <span class="status-dot"></span>
+                                    Pending Approval
+                                </span>
+                            </div>
+                        </div>
+                        <div class="payment-details">
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Type</span>
+                                <span class="payment-detail-value">Vendor Payment</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Department</span>
+                                <span class="payment-detail-value">Engineering</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Submitted</span>
+                                <span class="payment-detail-value">2026-01-14</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Due Date</span>
+                                <span class="payment-detail-value">2026-01-20</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Current Approver</span>
+                                <span class="payment-detail-value">Finance Manager</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-item" data-payment-id="2">
+                        <div class="payment-header">
+                            <div>
+                                <div class="payment-vendor">Cloud Infrastructure Inc</div>
+                                <div class="payment-id">PAY-2026-002 • INV-2026-042</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="payment-amount">₹125,000</div>
+                                <span class="status-badge approved">
+                                    <span class="status-dot"></span>
+                                    Approved
+                                </span>
+                            </div>
+                        </div>
+                        <div class="payment-details">
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Type</span>
+                                <span class="payment-detail-value">Vendor Payment</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Department</span>
+                                <span class="payment-detail-value">Operations</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Submitted</span>
+                                <span class="payment-detail-value">2026-01-13</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Due Date</span>
+                                <span class="payment-detail-value">2026-01-18</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Current Approver</span>
+                                <span class="payment-detail-value">CFO</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-item" data-payment-id="3">
+                        <div class="payment-header">
+                            <div>
+                                <div class="payment-vendor">US Office Rent</div>
+                                <div class="payment-id">PAY-2026-003 • RENT-JAN-2026</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="payment-amount">$2,500</div>
+                                <span class="status-badge processing">
+                                    <span class="status-dot"></span>
+                                    Processing
+                                </span>
+                            </div>
+                        </div>
+                        <div class="payment-details">
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Type</span>
+                                <span class="payment-detail-value">International Transfer</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Department</span>
+                                <span class="payment-detail-value">Administration</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Submitted</span>
+                                <span class="payment-detail-value">2026-01-12</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Due Date</span>
+                                <span class="payment-detail-value">2026-01-15</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Current Approver</span>
+                                <span class="payment-detail-value">CFO</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Payment View -->
+            <div id="new-payment" class="view">
+                <div class="page-header">
+                    <h1 class="page-title">New Payment Request ✨</h1>
+                    <p class="page-subtitle">Fill out the form below to submit a new payment request</p>
+                </div>
+
+                <form id="payment-form" class="form-card">
+                    <div class="form-section">
+                        <h3 class="form-section-title">Payment Details</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Vendor Name <span class="required">*</span></label>
+                                <select class="form-select" name="vendor" required>
+                                    <option value="">Select Vendor</option>
+                                    <option value="ABC Software Solutions">ABC Software Solutions</option>
+                                    <option value="Cloud Infrastructure Inc">Cloud Infrastructure Inc</option>
+                                    <option value="Design Agency Ltd">Design Agency Ltd</option>
+                                    <option value="Marketing Services Co">Marketing Services Co</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Payment Type <span class="required">*</span></label>
+                                <select class="form-select" name="paymentType" required>
+                                    <option value="">Select Type</option>
+                                    <option value="Vendor Payment">Vendor Payment</option>
+                                    <option value="Contractor Payment">Contractor Payment</option>
+                                    <option value="Reimbursement">Employee Reimbursement</option>
+                                    <option value="International Transfer">International Transfer</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Amount <span class="required">*</span></label>
+                                <input type="number" class="form-input" name="amount" placeholder="Enter amount" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Currency <span class="required">*</span></label>
+                                <select class="form-select" name="currency" required>
+                                    <option value="INR">INR (₹)</option>
+                                    <option value="USD">USD ($)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Department <span class="required">*</span></label>
+                                <select class="form-select" name="department" required>
+                                    <option value="">Select Department</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Operations">Operations</option>
+                                    <option value="Sales">Sales</option>
+                                    <option value="Administration">Administration</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Payment Method <span class="required">*</span></label>
+                                <select class="form-select" name="paymentMethod" required>
+                                    <option value="">Select Method</option>
+                                    <option value="NEFT">NEFT</option>
+                                    <option value="RTGS">RTGS</option>
+                                    <option value="IMPS">IMPS</option>
+                                    <option value="Wire Transfer">Wire Transfer</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Invoice Number <span class="required">*</span></label>
+                                <input type="text" class="form-input" name="invoiceNumber" placeholder="e.g., INV-2026-001" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Due Date <span class="required">*</span></label>
+                                <input type="date" class="form-input" name="dueDate" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label class="form-label">Purpose / Description <span class="required">*</span></label>
+                            <textarea class="form-textarea" name="purpose" placeholder="Describe the purpose of this payment..." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">Upload Documents</h3>
+                        <div class="file-upload-area">
+                            <div class="file-upload-icon">📎</div>
+                            <div style="color: var(--text-medium); font-size: 0.95rem;">
+                                <strong>Click to upload</strong> or drag and drop<br>
+                                Invoice, PO, or supporting documents (PDF, JPG, PNG - max 5MB)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Submit Payment Request 🚀</button>
+                        <button type="button" class="btn btn-secondary">Save as Draft</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- My Payments View -->
+            <div id="my-payments" class="view">
+                <div class="page-header">
+                    <h1 class="page-title">My Payment Requests 📋</h1>
+                    <p class="page-subtitle">Track the status of all your submitted payment requests</p>
+                </div>
+
+                <div class="payment-list">
+                    <div class="payment-item" onclick="showPaymentDetail(1)">
+                        <div class="payment-header">
+                            <div>
+                                <div class="payment-vendor">ABC Software Solutions</div>
+                                <div class="payment-id">PAY-2026-001 • INV-2026-045</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="payment-amount">₹75,000</div>
+                                <span class="status-badge pending">
+                                    <span class="status-dot"></span>
+                                    Pending Approval
+                                </span>
+                            </div>
+                        </div>
+                        <div class="payment-details">
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Type</span>
+                                <span class="payment-detail-value">Vendor Payment</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Department</span>
+                                <span class="payment-detail-value">Engineering</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Submitted</span>
+                                <span class="payment-detail-value">2026-01-14</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Due Date</span>
+                                <span class="payment-detail-value">2026-01-20</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-item" onclick="showPaymentDetail(2)">
+                        <div class="payment-header">
+                            <div>
+                                <div class="payment-vendor">Cloud Infrastructure Inc</div>
+                                <div class="payment-id">PAY-2026-002 • INV-2026-042</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="payment-amount">₹125,000</div>
+                                <span class="status-badge approved">
+                                    <span class="status-dot"></span>
+                                    Approved
+                                </span>
+                            </div>
+                        </div>
+                        <div class="payment-details">
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Type</span>
+                                <span class="payment-detail-value">Vendor Payment</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Department</span>
+                                <span class="payment-detail-value">Operations</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Submitted</span>
+                                <span class="payment-detail-value">2026-01-13</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Due Date</span>
+                                <span class="payment-detail-value">2026-01-18</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-item" onclick="showPaymentDetail(3)">
+                        <div class="payment-header">
+                            <div>
+                                <div class="payment-vendor">US Office Rent</div>
+                                <div class="payment-id">PAY-2026-003 • RENT-JAN-2026</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="payment-amount">$2,500</div>
+                                <span class="status-badge processing">
+                                    <span class="status-dot"></span>
+                                    Processing
+                                </span>
+                            </div>
+                        </div>
+                        <div class="payment-details">
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Type</span>
+                                <span class="payment-detail-value">International Transfer</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Department</span>
+                                <span class="payment-detail-value">Administration</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Submitted</span>
+                                <span class="payment-detail-value">2026-01-12</span>
+                            </div>
+                            <div class="payment-detail-item">
+                                <span class="payment-detail-label">Due Date</span>
+                                <span class="payment-detail-value">2026-01-15</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Detail View -->
+            <div id="payment-detail" class="view">
+                <div class="form-card">
+                    <div style="margin-bottom: 2rem;">
+                        <button class="btn btn-secondary" onclick="showView('my-payments')">← Back to My Payments</button>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--deep-purple); margin-bottom: 0.5rem;">
+                                ABC Software Solutions
+                            </h2>
+                            <p style="color: var(--text-medium); font-size: 1rem;">PAY-2026-001 • INV-2026-045</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primary-lavender); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem;">
+                                ₹75,000
+                            </div>
+                            <span class="status-badge pending">
+                                <span class="status-dot"></span>
+                                Pending Approval
+                            </span>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+                        <div>
+                            <div class="payment-detail-label">Payment Type</div>
+                            <div style="font-size: 1rem; margin-top: 0.5rem; color: var(--text-dark); font-weight: 500;">Vendor Payment</div>
+                        </div>
+                        <div>
+                            <div class="payment-detail-label">Department</div>
+                            <div style="font-size: 1rem; margin-top: 0.5rem; color: var(--text-dark); font-weight: 500;">Engineering</div>
+                        </div>
+                        <div>
+                            <div class="payment-detail-label">Submitted Date</div>
+                            <div style="font-size: 1rem; margin-top: 0.5rem; color: var(--text-dark); font-weight: 500;">2026-01-14</div>
+                        </div>
+                        <div>
+                            <div class="payment-detail-label">Due Date</div>
+                            <div style="font-size: 1rem; margin-top: 0.5rem; color: var(--text-dark); font-weight: 500;">2026-01-20</div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">Payment Timeline</h3>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Request Submitted</div>
+                                    <div class="timeline-meta">By Engineering Manager • 2026-01-14 10:30 AM</div>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Awaiting Finance Manager Approval</div>
+                                    <div class="timeline-meta">Next approver: Priya Sharma</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports View -->
+            <div id="reports" class="view">
+                <div class="page-header">
+                    <h1 class="page-title">Reports & Analytics 📊</h1>
+                    <p class="page-subtitle">View comprehensive financial reports and insights</p>
+                </div>
+
+                <!-- Report Selection Tabs -->
+                <div class="report-tabs">
+                    <button class="report-tab active" data-report="cash-flow">💰 Cash Flow Summary</button>
+                    <button class="report-tab" data-report="spend-analysis">📈 Spend Analysis</button>
+                    <button class="report-tab" data-report="approval-cycle">⏱️ Approval Cycle Time</button>
+                    <button class="report-tab" data-report="aged-payables">📋 Aged Payables</button>
+                </div>
+
+                <!-- Cash Flow Report -->
+                <div id="report-cash-flow" class="report-container active">
+                    <div class="form-card">
+                        <div class="report-header">
+                            <div>
+                                <h3 class="form-section-title">Cash Flow Summary Report</h3>
+                                <p style="color: var(--text-medium); margin-top: 0.5rem;">Track your cash inflows and outflows over time</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="downloadReport('cash-flow')">
+                                📥 Download Report
+                            </button>
+                        </div>
+
+                        <div class="report-filters">
+                            <div class="form-group">
+                                <label class="form-label">Date Range</label>
+                                <select class="form-select">
+                                    <option>This Month (January 2026)</option>
+                                    <option>Last Month (December 2025)</option>
+                                    <option>This Quarter (Q1 2026)</option>
+                                    <option>Last Quarter (Q4 2025)</option>
+                                    <option>Custom Range</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-secondary" onclick="generateReport('cash-flow')">Generate Report</button>
+                        </div>
+
+                        <div class="report-content">
+                            <!-- Summary Cards -->
+                            <div class="report-summary">
+                                <div class="summary-card">
+                                    <div class="summary-label">Opening Balance</div>
+                                    <div class="summary-value positive">₹1,25,00,000</div>
+                                    <div class="summary-date">As of Jan 1, 2026</div>
+                                </div>
+                                <div class="summary-card">
+                                    <div class="summary-label">Total Outflows</div>
+                                    <div class="summary-value negative">₹45,75,000</div>
+                                    <div class="summary-date">Jan 1-14, 2026</div>
+                                </div>
+                                <div class="summary-card">
+                                    <div class="summary-label">Closing Balance</div>
+                                    <div class="summary-value positive">₹79,25,000</div>
+                                    <div class="summary-date">As of Jan 14, 2026</div>
+                                </div>
+                            </div>
+
+                            <!-- Cash Flow Table -->
+                            <div class="report-table-container">
+                                <table class="report-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Week</th>
+                                            <th>Opening Balance</th>
+                                            <th>Outflows</th>
+                                            <th>Closing Balance</th>
+                                            <th>Change</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Week 1 (Jan 1-7)</td>
+                                            <td>₹1,25,00,000</td>
+                                            <td class="negative">-₹18,50,000</td>
+                                            <td>₹1,06,50,000</td>
+                                            <td class="negative">-14.8%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Week 2 (Jan 8-14)</td>
+                                            <td>₹1,06,50,000</td>
+                                            <td class="negative">-₹27,25,000</td>
+                                            <td>₹79,25,000</td>
+                                            <td class="negative">-25.6%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Week 3 (Jan 15-21)</td>
+                                            <td>₹79,25,000</td>
+                                            <td class="forecast">Projected: -₹15,00,000</td>
+                                            <td class="forecast">₹64,25,000</td>
+                                            <td class="forecast">-18.9%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Visual Chart Placeholder -->
+                            <div class="chart-container">
+                                <canvas id="cashFlowChart" style="max-height: 300px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spend Analysis Report -->
+                <div id="report-spend-analysis" class="report-container">
+                    <div class="form-card">
+                        <div class="report-header">
+                            <div>
+                                <h3 class="form-section-title">Spend Analysis by Department</h3>
+                                <p style="color: var(--text-medium); margin-top: 0.5rem;">Analyze spending patterns across departments</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="downloadReport('spend-analysis')">
+                                📥 Download Report
+                            </button>
+                        </div>
+
+                        <div class="report-filters">
+                            <div class="form-group">
+                                <label class="form-label">Period</label>
+                                <select class="form-select">
+                                    <option>January 2026</option>
+                                    <option>December 2025</option>
+                                    <option>Q4 2025</option>
+                                    <option>Year 2025</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-secondary" onclick="generateReport('spend-analysis')">Generate Report</button>
+                        </div>
+
+                        <div class="report-content">
+                            <!-- Total Spend Card -->
+                            <div class="report-summary">
+                                <div class="summary-card large">
+                                    <div class="summary-label">Total Spend (January 2026)</div>
+                                    <div class="summary-value" style="font-size: 3rem;">₹45,75,000</div>
+                                    <div class="summary-trend">
+                                        <span style="color: var(--success);">↓ 12% vs December 2025</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Spend by Department Table -->
+                            <div class="report-table-container">
+                                <table class="report-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Department</th>
+                                            <th>Amount Spent</th>
+                                            <th>Payment Count</th>
+                                            <th>% of Total</th>
+                                            <th>vs Last Month</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Engineering</strong></td>
+                                            <td>₹18,50,000</td>
+                                            <td>8</td>
+                                            <td><span class="percentage-bar" style="--percentage: 40%">40.4%</span></td>
+                                            <td class="positive">+15%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Operations</strong></td>
+                                            <td>₹12,25,000</td>
+                                            <td>10</td>
+                                            <td><span class="percentage-bar" style="--percentage: 27%">26.8%</span></td>
+                                            <td class="negative">-5%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Marketing</strong></td>
+                                            <td>₹8,75,000</td>
+                                            <td>4</td>
+                                            <td><span class="percentage-bar" style="--percentage: 19%">19.1%</span></td>
+                                            <td class="positive">+22%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Sales</strong></td>
+                                            <td>₹4,50,000</td>
+                                            <td>6</td>
+                                            <td><span class="percentage-bar" style="--percentage: 10%">9.8%</span></td>
+                                            <td class="neutral">-2%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Administration</strong></td>
+                                            <td>₹1,75,000</td>
+                                            <td>3</td>
+                                            <td><span class="percentage-bar" style="--percentage: 4%">3.8%</span></td>
+                                            <td class="negative">-8%</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td><strong>Total</strong></td>
+                                            <td><strong>₹45,75,000</strong></td>
+                                            <td><strong>31</strong></td>
+                                            <td><strong>100%</strong></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <!-- Top Vendors -->
+                            <div style="margin-top: 3rem;">
+                                <h4 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600; color: var(--deep-purple); margin-bottom: 1.5rem;">
+                                    Top 5 Vendors by Spend
+                                </h4>
+                                <div class="vendor-list">
+                                    <div class="vendor-item">
+                                        <div class="vendor-rank">1</div>
+                                        <div class="vendor-details">
+                                            <div class="vendor-name">Cloud Infrastructure Inc</div>
+                                            <div class="vendor-category">Operations • Cloud Services</div>
+                                        </div>
+                                        <div class="vendor-amount">₹8,50,000</div>
+                                    </div>
+                                    <div class="vendor-item">
+                                        <div class="vendor-rank">2</div>
+                                        <div class="vendor-details">
+                                            <div class="vendor-name">ABC Software Solutions</div>
+                                            <div class="vendor-category">Engineering • SaaS Licenses</div>
+                                        </div>
+                                        <div class="vendor-amount">₹6,75,000</div>
+                                    </div>
+                                    <div class="vendor-item">
+                                        <div class="vendor-rank">3</div>
+                                        <div class="vendor-details">
+                                            <div class="vendor-name">Marketing Agency Pro</div>
+                                            <div class="vendor-category">Marketing • Digital Campaigns</div>
+                                        </div>
+                                        <div class="vendor-amount">₹5,25,000</div>
+                                    </div>
+                                    <div class="vendor-item">
+                                        <div class="vendor-rank">4</div>
+                                        <div class="vendor-details">
+                                            <div class="vendor-name">Design Studio Ltd</div>
+                                            <div class="vendor-category">Engineering • UI/UX Design</div>
+                                        </div>
+                                        <div class="vendor-amount">₹4,80,000</div>
+                                    </div>
+                                    <div class="vendor-item">
+                                        <div class="vendor-rank">5</div>
+                                        <div class="vendor-details">
+                                            <div class="vendor-name">Office Supplies Co</div>
+                                            <div class="vendor-category">Administration • Office Equipment</div>
+                                        </div>
+                                        <div class="vendor-amount">₹3,50,000</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approval Cycle Time Report -->
+                <div id="report-approval-cycle" class="report-container">
+                    <div class="form-card">
+                        <div class="report-header">
+                            <div>
+                                <h3 class="form-section-title">Approval Cycle Time Analysis</h3>
+                                <p style="color: var(--text-medium); margin-top: 0.5rem;">Track approval efficiency and bottlenecks</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="downloadReport('approval-cycle')">
+                                📥 Download Report
+                            </button>
+                        </div>
+
+                        <div class="report-filters">
+                            <div class="form-group">
+                                <label class="form-label">Period</label>
+                                <select class="form-select">
+                                    <option>Last 30 Days</option>
+                                    <option>Last 90 Days</option>
+                                    <option>This Quarter</option>
+                                    <option>This Year</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-secondary" onclick="generateReport('approval-cycle')">Generate Report</button>
+                        </div>
+
+                        <div class="report-content">
+                            <!-- KPI Cards -->
+                            <div class="report-summary" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                                <div class="summary-card">
+                                    <div class="summary-label">Average Cycle Time</div>
+                                    <div class="summary-value">1.5 days</div>
+                                    <div class="summary-trend">
+                                        <span style="color: var(--success);">↓ 60% improvement</span>
+                                    </div>
+                                </div>
+                                <div class="summary-card">
+                                    <div class="summary-label">Fastest Approval</div>
+                                    <div class="summary-value">0.3 days</div>
+                                    <div class="summary-date">4 hours</div>
+                                </div>
+                                <div class="summary-card">
+                                    <div class="summary-label">Slowest Approval</div>
+                                    <div class="summary-value">4.2 days</div>
+                                    <div class="summary-date">Needs attention</div>
+                                </div>
+                                <div class="summary-card">
+                                    <div class="summary-label">Total Payments</div>
+                                    <div class="summary-value">25</div>
+                                    <div class="summary-date">Last 30 days</div>
+                                </div>
+                            </div>
+
+                            <!-- Approval Time by Amount Range -->
+                            <div class="report-table-container">
+                                <table class="report-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Payment Range</th>
+                                            <th>Count</th>
+                                            <th>Avg Time</th>
+                                            <th>Min Time</th>
+                                            <th>Max Time</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>< ₹50,000</td>
+                                            <td>12</td>
+                                            <td>0.8 days</td>
+                                            <td>0.3 days</td>
+                                            <td>1.5 days</td>
+                                            <td><span class="status-badge approved" style="font-size: 0.75rem;">Excellent</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>₹50,000 - ₹2,00,000</td>
+                                            <td>8</td>
+                                            <td>1.2 days</td>
+                                            <td>0.5 days</td>
+                                            <td>2.8 days</td>
+                                            <td><span class="status-badge approved" style="font-size: 0.75rem;">Good</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>₹2,00,000 - ₹5,00,000</td>
+                                            <td>4</td>
+                                            <td>2.5 days</td>
+                                            <td>1.2 days</td>
+                                            <td>4.2 days</td>
+                                            <td><span class="status-badge processing" style="font-size: 0.75rem;">Fair</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>> ₹5,00,000</td>
+                                            <td>1</td>
+                                            <td>3.8 days</td>
+                                            <td>3.8 days</td>
+                                            <td>3.8 days</td>
+                                            <td><span class="status-badge pending" style="font-size: 0.75rem;">Needs Review</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Approval Time by Approver -->
+                            <div style="margin-top: 3rem;">
+                                <h4 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600; color: var(--deep-purple); margin-bottom: 1.5rem;">
+                                    Average Response Time by Approver
+                                </h4>
+                                <div class="approver-performance">
+                                    <div class="approver-item">
+                                        <div class="approver-info">
+                                            <div class="user-avatar" style="width: 40px; height: 40px;">PS</div>
+                                            <div>
+                                                <div class="approver-name">Priya Sharma</div>
+                                                <div class="approver-role">Finance Manager</div>
+                                            </div>
+                                        </div>
+                                        <div class="approver-stats">
+                                            <div class="stat-item">
+                                                <div class="stat-label">Avg Time</div>
+                                                <div class="stat-value" style="color: var(--success);">0.6 days</div>
+                                            </div>
+                                            <div class="stat-item">
+                                                <div class="stat-label">Approved</div>
+                                                <div class="stat-value">18</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="approver-item">
+                                        <div class="approver-info">
+                                            <div class="user-avatar" style="width: 40px; height: 40px;">RK</div>
+                                            <div>
+                                                <div class="approver-name">Rajesh Kumar</div>
+                                                <div class="approver-role">CFO</div>
+                                            </div>
+                                        </div>
+                                        <div class="approver-stats">
+                                            <div class="stat-item">
+                                                <div class="stat-label">Avg Time</div>
+                                                <div class="stat-value" style="color: var(--primary-lavender);">1.2 days</div>
+                                            </div>
+                                            <div class="stat-item">
+                                                <div class="stat-label">Approved</div>
+                                                <div class="stat-value">12</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="approver-item">
+                                        <div class="approver-info">
+                                            <div class="user-avatar" style="width: 40px; height: 40px;">SM</div>
+                                            <div>
+                                                <div class="approver-name">Sanjay Mehta</div>
+                                                <div class="approver-role">CEO</div>
+                                            </div>
+                                        </div>
+                                        <div class="approver-stats">
+                                            <div class="stat-item">
+                                                <div class="stat-label">Avg Time</div>
+                                                <div class="stat-value" style="color: var(--warning);">2.8 days</div>
+                                            </div>
+                                            <div class="stat-item">
+                                                <div class="stat-label">Approved</div>
+                                                <div class="stat-value">3</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aged Payables Report -->
+                <div id="report-aged-payables" class="report-container">
+                    <div class="form-card">
+                        <div class="report-header">
+                            <div>
+                                <h3 class="form-section-title">Aged Payables Report</h3>
+                                <p style="color: var(--text-medium); margin-top: 0.5rem;">Track outstanding payments by aging bucket</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="downloadReport('aged-payables')">
+                                📥 Download Report
+                            </button>
+                        </div>
+
+                        <div class="report-filters">
+                            <div class="form-group">
+                                <label class="form-label">As of Date</label>
+                                <input type="date" class="form-input" value="2026-01-14">
+                            </div>
+                            <button class="btn btn-secondary" onclick="generateReport('aged-payables')">Generate Report</button>
+                        </div>
+
+                        <div class="report-content">
+                            <!-- Aging Summary -->
+                            <div class="report-summary">
+                                <div class="summary-card">
+                                    <div class="summary-label">Total Outstanding</div>
+                                    <div class="summary-value">₹12,50,000</div>
+                                    <div class="summary-date">3 payments pending</div>
+                                </div>
+                                <div class="summary-card">
+                                    <div class="summary-label">Overdue Amount</div>
+                                    <div class="summary-value negative">₹0</div>
+                                    <div class="summary-trend" style="color: var(--success);">All on track!</div>
+                                </div>
+                            </div>
+
+                            <!-- Aging Table -->
+                            <div class="report-table-container">
+                                <table class="report-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Payment ID</th>
+                                            <th>Vendor</th>
+                                            <th>Invoice No</th>
+                                            <th>Amount</th>
+                                            <th>Due Date</th>
+                                            <th>Days Until Due</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>PAY-2026-001</td>
+                                            <td>ABC Software Solutions</td>
+                                            <td>INV-2026-045</td>
+                                            <td>₹75,000</td>
+                                            <td>Jan 20, 2026</td>
+                                            <td class="positive">6 days</td>
+                                            <td><span class="status-badge pending" style="font-size: 0.75rem;">Pending Approval</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>PAY-2026-002</td>
+                                            <td>Cloud Infrastructure Inc</td>
+                                            <td>INV-2026-042</td>
+                                            <td>₹1,25,000</td>
+                                            <td>Jan 18, 2026</td>
+                                            <td class="positive">4 days</td>
+                                            <td><span class="status-badge approved" style="font-size: 0.75rem;">Approved</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>PAY-2026-003</td>
+                                            <td>US Office Rent</td>
+                                            <td>RENT-JAN-2026</td>
+                                            <td>$2,500</td>
+                                            <td>Jan 15, 2026</td>
+                                            <td class="positive">1 day</td>
+                                            <td><span class="status-badge processing" style="font-size: 0.75rem;">Processing</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const viewName = this.getAttribute('data-view');
+                showView(viewName);
+                
+                // Update active state
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        function showView(viewName) {
+            document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+            document.getElementById(viewName).classList.add('active');
+        }
+
+        function showPaymentDetail(paymentId) {
+            showView('payment-detail');
+        }
+
+        // Form submission
+        document.getElementById('payment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Create success alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success';
+            alertDiv.innerHTML = `
+                <strong>✅ Success!</strong> Payment request submitted successfully!<br>
+                <strong>Request ID:</strong> PAY-2026-004<br>
+                <strong>Status:</strong> Pending Approval<br>
+                Redirecting to My Payments...
+            `;
+            
+            // Insert alert at the top of the form
+            this.insertBefore(alertDiv, this.firstChild);
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Redirect after 3 seconds
+            setTimeout(() => {
+                showView('my-payments');
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.querySelector('.nav-link[data-view="my-payments"]').classList.add('active');
+            }, 3000);
+        });
+
+        // Add click animation to payment items
+        document.querySelectorAll('.payment-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 100);
+            });
+        });
+
+        // File upload area interaction
+        document.querySelectorAll('.file-upload-area').forEach(area => {
+            area.addEventListener('click', function() {
+                alert('📎 File upload functionality will be implemented in the full version!\n\nFor now, this is a visual prototype demonstrating the workflow.');
+            });
+        });
+
+        // Save as draft button
+        document.querySelectorAll('.btn-secondary').forEach(btn => {
+            if (btn.textContent.includes('Save as Draft')) {
+                btn.addEventListener('click', function() {
+                    alert('💾 Draft saved successfully!\n\nYou can continue editing this payment request later.');
+                });
+            }
+        });
+
+        // Report Tabs
+        document.querySelectorAll('.report-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const reportType = this.getAttribute('data-report');
+                
+                // Update active tab
+                document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding report
+                document.querySelectorAll('.report-container').forEach(r => r.classList.remove('active'));
+                document.getElementById('report-' + reportType).classList.add('active');
+            });
+        });
+
+        // Generate Report
+        function generateReport(reportType) {
+            const reportNames = {
+                'cash-flow': 'Cash Flow Summary',
+                'spend-analysis': 'Spend Analysis by Department',
+                'approval-cycle': 'Approval Cycle Time Analysis',
+                'aged-payables': 'Aged Payables'
+            };
+            
+            // Show loading state
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Generating...';
+            btn.disabled = true;
+            
+            // Simulate report generation
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                
+                alert(`✅ ${reportNames[reportType]} generated successfully!\n\nThe report data is now displayed below.`);
+            }, 1500);
+        }
+
+        // Download Report
+        function downloadReport(reportType) {
+            const reportNames = {
+                'cash-flow': 'Cash_Flow_Summary_Jan_2026',
+                'spend-analysis': 'Spend_Analysis_By_Department_Jan_2026',
+                'approval-cycle': 'Approval_Cycle_Time_Report_Jan_2026',
+                'aged-payables': 'Aged_Payables_Report_Jan_14_2026'
+            };
+            
+            const reportTitles = {
+                'cash-flow': 'Cash Flow Summary Report',
+                'spend-analysis': 'Spend Analysis by Department Report',
+                'approval-cycle': 'Approval Cycle Time Analysis Report',
+                'aged-payables': 'Aged Payables Report'
+            };
+            
+            // Show downloading state
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '📥 Downloading...';
+            btn.disabled = true;
+            
+            // Simulate download with actual CSV generation
+            setTimeout(() => {
+                // Generate CSV content based on report type
+                let csvContent = '';
+                
+                if (reportType === 'cash-flow') {
+                    csvContent = `${reportTitles[reportType]}\nGenerated: ${new Date().toLocaleString()}\n\n`;
+                    csvContent += 'Week,Opening Balance,Outflows,Closing Balance,Change\n';
+                    csvContent += 'Week 1 (Jan 1-7),₹1,25,00,000,-₹18,50,000,₹1,06,50,000,-14.8%\n';
+                    csvContent += 'Week 2 (Jan 8-14),₹1,06,50,000,-₹27,25,000,₹79,25,000,-25.6%\n';
+                    csvContent += 'Week 3 (Jan 15-21) Projected,₹79,25,000,-₹15,00,000,₹64,25,000,-18.9%\n';
+                } else if (reportType === 'spend-analysis') {
+                    csvContent = `${reportTitles[reportType]}\nGenerated: ${new Date().toLocaleString()}\n\n`;
+                    csvContent += 'Department,Amount Spent,Payment Count,% of Total,vs Last Month\n';
+                    csvContent += 'Engineering,₹18,50,000,8,40.4%,+15%\n';
+                    csvContent += 'Operations,₹12,25,000,10,26.8%,-5%\n';
+                    csvContent += 'Marketing,₹8,75,000,4,19.1%,+22%\n';
+                    csvContent += 'Sales,₹4,50,000,6,9.8%,-2%\n';
+                    csvContent += 'Administration,₹1,75,000,3,3.8%,-8%\n';
+                    csvContent += 'Total,₹45,75,000,31,100%,\n';
+                } else if (reportType === 'approval-cycle') {
+                    csvContent = `${reportTitles[reportType]}\nGenerated: ${new Date().toLocaleString()}\n\n`;
+                    csvContent += 'Payment Range,Count,Avg Time,Min Time,Max Time,Status\n';
+                    csvContent += '< ₹50000,12,0.8 days,0.3 days,1.5 days,Excellent\n';
+                    csvContent += '₹50000 - ₹200000,8,1.2 days,0.5 days,2.8 days,Good\n';
+                    csvContent += '₹200000 - ₹500000,4,2.5 days,1.2 days,4.2 days,Fair\n';
+                    csvContent += '> ₹500000,1,3.8 days,3.8 days,3.8 days,Needs Review\n';
+                } else if (reportType === 'aged-payables') {
+                    csvContent = `${reportTitles[reportType]}\nGenerated: ${new Date().toLocaleString()}\n\n`;
+                    csvContent += 'Payment ID,Vendor,Invoice No,Amount,Due Date,Days Until Due,Status\n';
+                    csvContent += 'PAY-2026-001,ABC Software Solutions,INV-2026-045,₹75000,Jan 20 2026,6 days,Pending Approval\n';
+                    csvContent += 'PAY-2026-002,Cloud Infrastructure Inc,INV-2026-042,₹125000,Jan 18 2026,4 days,Approved\n';
+                    csvContent += 'PAY-2026-003,US Office Rent,RENT-JAN-2026,$2500,Jan 15 2026,1 day,Processing\n';
+                }
+                
+                // Create blob and download
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                
+                link.setAttribute('href', url);
+                link.setAttribute('download', `${reportNames[reportType]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Reset button
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.className = 'alert alert-success';
+                successMsg.style.position = 'fixed';
+                successMsg.style.top = '100px';
+                successMsg.style.right = '20px';
+                successMsg.style.zIndex = '1000';
+                successMsg.style.minWidth = '300px';
+                successMsg.innerHTML = `
+                    <strong>✅ Download Complete!</strong><br>
+                    ${reportTitles[reportType]} has been downloaded as CSV.<br>
+                    <small>Check your Downloads folder.</small>
+                `;
+                document.body.appendChild(successMsg);
+                
+                setTimeout(() => {
+                    successMsg.remove();
+                }, 4000);
+            }, 1000);
+        }
+
+        // Simple chart visualization (using ASCII art for prototype)
+        function drawSimpleChart() {
+            const canvas = document.getElementById('cashFlowChart');
+            if (canvas && canvas.getContext) {
+                const ctx = canvas.getContext('2d');
+                
+                // Simple bar chart visualization
+                ctx.fillStyle = '#9B8FC9';
+                ctx.fillRect(50, 150, 80, 100);
+                ctx.fillRect(170, 100, 80, 150);
+                ctx.fillRect(290, 180, 80, 70);
+                
+                ctx.fillStyle = '#6B5B7F';
+                ctx.font = '14px DM Sans';
+                ctx.fillText('Week 1', 60, 270);
+                ctx.fillText('Week 2', 180, 270);
+                ctx.fillText('Week 3', 290, 270);
+                
+                ctx.fillText('Cash Flow Trend (in lakhs)', 120, 30);
+            }
+        }
+
+        // Initialize - make sure dashboard is showing
+        document.addEventListener('DOMContentLoaded', function() {
+            showView('dashboard');
+            
+            // Draw chart if on reports page
+            setTimeout(drawSimpleChart, 100);
+        });
+    </script>
+</body>
+</html>
